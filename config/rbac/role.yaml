@@ -30,3 +30,12 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - axiom.dana.io
+  resources:
+  - clusterversions
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch

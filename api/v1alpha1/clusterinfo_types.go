@@ -20,22 +20,42 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// ClusterInfoSpec defines the desired state of ClusterInfo.
-type ClusterInfoSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of ClusterInfo. Edit clusterinfo_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+// NodeInfo holds information about a node
+type NodeInfo struct {
+	Name           string       `json:"name,omitempty"`
+	InternalIP     string       `json:"internalIP,omitempty"`
+	ExternalIP     string       `json:"externalIP,omitempty"`
+	Capacity       NodeCapacity `json:"capacity,omitempty"`
+	Allocatable    NodeCapacity `json:"allocatable,omitempty"`
+	OSImage        string       `json:"osImage,omitempty"`
+	KubeletVersion string       `json:"kubeletVersion,omitempty"`
 }
 
-// ClusterInfoStatus defines the observed state of ClusterInfo.
+// NodeCapacity describes resource capacity or allocatable
+type NodeCapacity struct {
+	CPU     string `json:"cpu,omitempty"`
+	Memory  string `json:"memory,omitempty"`
+	Pods    string `json:"pods,omitempty"`
+	Storage string `json:"storage,omitempty"`
+}
+
+// GPUInfo describes GPU resources on a node
+type GPUInfo struct {
+	NodeName string `json:"nodeName,omitempty"`
+	Model    string `json:"model,omitempty"`
+	Count    int    `json:"count,omitempty"`
+}
+
+// ClusterInfoSpec defines the desired state of ClusterInfo.
+type ClusterInfoSpec struct{}
+
 type ClusterInfoStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	KubernetesVersion string      `json:"kubernetesVersion,omitempty"`
+	NodeCount         int         `json:"nodeCount,omitempty"`
+	Nodes             []NodeInfo  `json:"nodes,omitempty"`
+	PodCount          int         `json:"podCount,omitempty"`
+	GPUs              []GPUInfo   `json:"gpus,omitempty"`
+	LastUpdated       metav1.Time `json:"lastUpdated,omitempty"`
 }
 
 // +kubebuilder:object:root=true
