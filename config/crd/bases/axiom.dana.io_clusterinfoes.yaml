@@ -41,54 +41,55 @@ spec:
             type: object
           status:
             properties:
-              gpus:
+              apiServerAddresses:
                 items:
-                  description: GPUInfo describes GPU resources on a node
-                  properties:
-                    count:
-                      type: integer
-                    model:
+                  type: string
+                type: array
+              clusterDnsConfig:
+                properties:
+                  searchDomains:
+                    items:
                       type: string
-                    nodeName:
+                    type: array
+                  servers:
+                    items:
                       type: string
-                  type: object
+                    type: array
+                required:
+                - searchDomains
+                - servers
+                type: object
+              clusterID:
+                type: string
+              clusterResources:
+                description: ClusterResources describes resource capacity of the cluster.
+                properties:
+                  cpu:
+                    type: string
+                  gpu:
+                    type: string
+                  memory:
+                    type: string
+                  pods:
+                    type: string
+                  storage:
+                    type: string
+                type: object
+              identityProviders:
+                items:
+                  type: string
                 type: array
               kubernetesVersion:
                 type: string
-              lastUpdated:
-                format: date-time
-                type: string
-              nodeCount:
-                type: integer
-              nodes:
+              mutatingWebhooks:
+                items:
+                  type: string
+                type: array
+              nodeInfo:
                 items:
                   description: NodeInfo holds information about a node
                   properties:
-                    allocatable:
-                      description: NodeCapacity describes resource capacity or allocatable
-                      properties:
-                        cpu:
-                          type: string
-                        memory:
-                          type: string
-                        pods:
-                          type: string
-                        storage:
-                          type: string
-                      type: object
-                    capacity:
-                      description: NodeCapacity describes resource capacity or allocatable
-                      properties:
-                        cpu:
-                          type: string
-                        memory:
-                          type: string
-                        pods:
-                          type: string
-                        storage:
-                          type: string
-                      type: object
-                    externalIP:
+                    hostname:
                       type: string
                     internalIP:
                       type: string
@@ -100,8 +101,26 @@ spec:
                       type: string
                   type: object
                 type: array
-              podCount:
-                type: integer
+              routerLBAddress:
+                items:
+                  type: string
+                type: array
+              storageProvisioners:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    provisioner:
+                      type: string
+                  required:
+                  - name
+                  - provisioner
+                  type: object
+                type: array
+              validatingWebhooks:
+                items:
+                  type: string
+                type: array
             type: object
         type: object
     served: true

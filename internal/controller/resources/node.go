@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"github.com/dana-team/axiom-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -24,7 +25,7 @@ func formatMiB(q *resource.Quantity) string {
 	return fmt.Sprintf("%.0fMi", mib)
 }
 
-func CalculateClusterCompute(nodes []corev1.Node) map[string]string {
+func CalculateClusterCompute(nodes []corev1.Node) v1alpha1.ClusterResources {
 	totalCPU := resource.NewQuantity(0, resource.BinarySI)
 	totalMemory := resource.NewQuantity(0, resource.BinarySI)
 	totalPods := resource.NewQuantity(0, resource.DecimalSI)
@@ -49,11 +50,26 @@ func CalculateClusterCompute(nodes []corev1.Node) map[string]string {
 		}
 	}
 
-	return map[string]string{
-		"cpu":     totalCPU.String(),
-		"memory":  formatMiB(totalMemory),
-		"pods":    totalPods.String(),
-		"storage": formatMiB(totalStorage),
-		"gpu":     fmt.Sprintf("%d", totalGPU),
+	return v1alpha1.ClusterResources{
+		CPU:     totalCPU.String(),
+		Memory:  formatMiB(totalMemory),
+		Pods:    totalPods.String(),
+		Storage: formatMiB(totalStorage),
+		GPU:     fmt.Sprintf("%d", totalGPU),
 	}
+}
+
+func FormatNodesInfo(nodes []corev1.Node) []v1alpha1.NodeInfo {
+	nodesInfo := []v1alpha1.NodeInfo{}
+	for _, node := range nodes {
+		nodeInfo := v1alpha1.NodeInfo{
+			Name:           node.Name,
+			InternalIP:     node.Status.Addresses[0].Address,
+			Hostname:       node.Status.Addresses[1].Address,
+			KubeletVersion: node.Status.NodeInfo.KubeletVersion,
+			OSImage:        node.Status.NodeInfo.OperatingSystem,
+		}
+		nodesInfo = append(nodesInfo, nodeInfo)
+	}
+	return nodesInfo
 }

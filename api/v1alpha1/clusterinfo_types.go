@@ -18,44 +18,52 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sort"
 )
 
 // NodeInfo holds information about a node
 type NodeInfo struct {
-	Name           string       `json:"name,omitempty"`
-	InternalIP     string       `json:"internalIP,omitempty"`
-	ExternalIP     string       `json:"externalIP,omitempty"`
-	Capacity       NodeCapacity `json:"capacity,omitempty"`
-	Allocatable    NodeCapacity `json:"allocatable,omitempty"`
-	OSImage        string       `json:"osImage,omitempty"`
-	KubeletVersion string       `json:"kubeletVersion,omitempty"`
+	Name           string `json:"name,omitempty"`
+	InternalIP     string `json:"internalIP,omitempty"`
+	Hostname       string `json:"hostname,omitempty"`
+	OSImage        string `json:"osImage,omitempty"`
+	KubeletVersion string `json:"kubeletVersion,omitempty"`
 }
 
-// NodeCapacity describes resource capacity or allocatable
-type NodeCapacity struct {
+// ClusterResources describes resource capacity of the cluster.
+type ClusterResources struct {
 	CPU     string `json:"cpu,omitempty"`
 	Memory  string `json:"memory,omitempty"`
 	Pods    string `json:"pods,omitempty"`
 	Storage string `json:"storage,omitempty"`
+	GPU     string `json:"gpu,omitempty"`
 }
 
-// GPUInfo describes GPU resources on a node
-type GPUInfo struct {
-	NodeName string `json:"nodeName,omitempty"`
-	Model    string `json:"model,omitempty"`
-	Count    int    `json:"count,omitempty"`
+type StorageProvisioner struct {
+	Name        string `json:"name"`
+	Provisioner string `json:"provisioner"`
+}
+
+type ClusterDnsConfig struct {
+	SearchDomains []string `json:"searchDomains"`
+	Servers       []string `json:"servers"`
 }
 
 // ClusterInfoSpec defines the desired state of ClusterInfo.
 type ClusterInfoSpec struct{}
 
 type ClusterInfoStatus struct {
-	KubernetesVersion string      `json:"kubernetesVersion,omitempty"`
-	NodeCount         int         `json:"nodeCount,omitempty"`
-	Nodes             []NodeInfo  `json:"nodes,omitempty"`
-	PodCount          int         `json:"podCount,omitempty"`
-	GPUs              []GPUInfo   `json:"gpus,omitempty"`
-	LastUpdated       metav1.Time `json:"lastUpdated,omitempty"`
+	ClusterID           string               `json:"clusterID,omitempty"`
+	KubernetesVersion   string               `json:"kubernetesVersion,omitempty"`
+	ClusterDnsConfig    ClusterDnsConfig     `json:"clusterDnsConfig,omitempty"`
+	ClusterResources    ClusterResources     `json:"clusterResources,omitempty"`
+	NodeInfo            []NodeInfo           `json:"nodeInfo,omitempty"`
+	RouterLBAddresses   []string             `json:"routerLBAddress,omitempty"`
+	ApiServerAddresses  []string             `json:"apiServerAddresses,omitempty"`
+	IdentityProviders   []string             `json:"identityProviders,omitempty"`
+	StorageProvisioners []StorageProvisioner `json:"storageProvisioners,omitempty"`
+	MutatingWebhooks    []string             `json:"mutatingWebhooks,omitempty"`
+	ValidatingWebhooks  []string             `json:"validatingWebhooks,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -81,4 +89,20 @@ type ClusterInfoList struct {
 
 func init() {
 	SchemeBuilder.Register(&ClusterInfo{}, &ClusterInfoList{})
+}
+
+func (s *ClusterInfoStatus) Normalize() {
+	sort.Strings(s.RouterLBAddresses)
+	sort.Strings(s.ApiServerAddresses)
+	sort.Strings(s.IdentityProviders)
+	sort.Strings(s.MutatingWebhooks)
+	sort.Strings(s.ValidatingWebhooks)
+
+	sort.Slice(s.NodeInfo, func(i, j int) bool {
+		return s.NodeInfo[i].Name < s.NodeInfo[j].Name
+	})
+
+	sort.Slice(s.StorageProvisioners, func(i, j int) bool {
+		return s.StorageProvisioners[i].Name < s.StorageProvisioners[j].Name
+	})
 }

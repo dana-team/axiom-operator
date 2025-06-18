@@ -7,20 +7,28 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func GetMutatingWebhooks(ctx context.Context, logger logr.Logger, k8sClient client.Client) ([]addmissionv1.MutatingWebhookConfiguration, error) {
+func GetMutatingWebhooks(ctx context.Context, logger logr.Logger, k8sClient client.Client) ([]string, error) {
 	mutatingWebhooks := &addmissionv1.MutatingWebhookConfigurationList{}
 	if err := k8sClient.List(ctx, mutatingWebhooks); err != nil {
 		logger.Error(err, "Failed to list MutatingWebhookConfiguration")
 		return nil, err
 	}
-	return mutatingWebhooks.Items, nil
+	mWebhooks := []string{}
+	for _, wh := range mutatingWebhooks.Items {
+		mWebhooks = append(mWebhooks, wh.Name)
+	}
+	return mWebhooks, nil
 }
 
-func GetValidatingWebhooks(ctx context.Context, logger logr.Logger, k8sClient client.Client) ([]addmissionv1.ValidatingWebhookConfiguration, error) {
+func GetValidatingWebhooks(ctx context.Context, logger logr.Logger, k8sClient client.Client) ([]string, error) {
 	validatingWebhooks := addmissionv1.ValidatingWebhookConfigurationList{}
 	if err := k8sClient.List(ctx, &validatingWebhooks); err != nil {
 		logger.Error(err, "Failed to list ValidatingWebhookConfiguration")
 		return nil, err
 	}
-	return validatingWebhooks.Items, nil
+	vWebhooks := []string{}
+	for _, wh := range validatingWebhooks.Items {
+		vWebhooks = append(vWebhooks, wh.Name)
+	}
+	return vWebhooks, nil
 }
