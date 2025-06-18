@@ -18,7 +18,11 @@ package controller
 
 import (
 	"context"
+	"fmt"
+
 	axiomv1alpha1 "github.com/dana-team/axiom-operator/api/v1alpha1"
+	"github.com/dana-team/axiom-operator/internal/controller/status"
+	"github.com/dana-team/axiom-operator/internal/db"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -47,6 +51,15 @@ func (r *ClusterInfoReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	if err := r.Get(ctx, req.NamespacedName, clusterInfo); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
+
+	if err := status.UpdateClusterInfoStatus(ctx, logger, *clusterInfo, r.Client); err != nil {
+		return ctrl.Result{}, fmt.Errorf("Failed to update ClusterInfo status %s", err.Error())
+	}
+	logger.Info("ClusterInfo status updated successfully")
+
+	go func(clusterInfo axiomv1alpha1.ClusterInfo) {
+		db.InsertClusterInfoToMongo(logger, clusterInfo)
+	}(*clusterInfo)
 
 	return ctrl.Result{}, nil
 }
