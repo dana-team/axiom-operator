@@ -1,8 +1,9 @@
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manager-role
+  name: {{ include "axiom-operator.fullname" . }}-clusterinfo-editor-role
+  labels:
+  {{- include "axiom-operator.labels" . | nindent 4 }}
 rules:
 - apiGroups:
   - axiom.dana.io
@@ -19,23 +20,6 @@ rules:
 - apiGroups:
   - axiom.dana.io
   resources:
-  - clusterinfoes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - axiom.dana.io
-  resources:
   - clusterinfoes/status
   verbs:
   - get
-  - patch
-  - update
-- apiGroups:
-  - axiom.dana.io
-  resources:
-  - clusterversions
-  - nodes
-  verbs:
-  - get
-  - list
-  - watch

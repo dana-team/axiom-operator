@@ -1,12 +1,29 @@
 # axiom-operator
-// TODO(user): Add simple overview of use/purpose
+
+The Axiom Operator is a Kubernetes operator designed to manage and monitor cluster information by integrating with
+MongoDB for persistent storage of cluster metadata and status information.
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+
+The Axiom Operator extends Kubernetes functionality by providing custom resources to handle cluster information
+management. It automatically collects and stores cluster metadata in MongoDB, enabling efficient tracking and monitoring
+of cluster states. The operator uses the ClusterInfo custom resource to define and manage cluster-specific information.
 
 ## Getting Started
 
 ### Prerequisites
+
+- go version v1.23.0+
+- docker version 17.03+.
+- kubectl version v1.11.3+.
+- Access to a Kubernetes v1.11.3+ cluster.
+
+### Environment Variables
+
+The following environment variables must be set for the operator to function properly:
+
+- `MONGO_URI`: MongoDB connection string URI for storing cluster information. Example:
+  `mongodb://username:password@host:port/database`
 - go version v1.23.0+
 - docker version 17.03+.
 - kubectl version v1.11.3+.
@@ -36,7 +53,7 @@ make deploy IMG=<some-registry>/axiom-operator:tag
 ```
 
 > **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
+> privileges or be logged in as admin.
 
 **Create instances of your solution**
 You can apply the samples (examples) from the config/sample:
@@ -111,7 +128,20 @@ previously added to 'dist/chart/values.yaml' or 'dist/chart/manager/manager.yaml
 is manually re-applied afterwards.
 
 ## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+
+We welcome contributions to the Axiom Operator project. Here's how you can contribute:
+
+1. Fork the repository and create your feature branch
+2. Write tests for any new functionality
+3. Ensure your code passes the existing tests and linting rules
+4. Submit a pull request with a comprehensive description of changes
+5. Follow the existing code style and documentation patterns
+
+Before submitting your contribution, please:
+
+- Run `make test` to ensure all tests pass
+- Run `make lint` to verify code style compliance
+- Update documentation as needed
 
 **NOTE:** Run `make help` for more information on all potential `make` targets
 

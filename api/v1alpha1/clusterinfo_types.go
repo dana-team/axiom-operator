@@ -17,25 +17,54 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"sort"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// ClusterInfoSpec defines the desired state of ClusterInfo.
-type ClusterInfoSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of ClusterInfo. Edit clusterinfo_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+// NodeInfo holds information about a node
+type NodeInfo struct {
+	Name           string `json:"name,omitempty"`
+	InternalIP     string `json:"internalIP,omitempty"`
+	Hostname       string `json:"hostname,omitempty"`
+	OSImage        string `json:"osImage,omitempty"`
+	KubeletVersion string `json:"kubeletVersion,omitempty"`
 }
 
-// ClusterInfoStatus defines the observed state of ClusterInfo.
+// ClusterResources describes resource capacity of the cluster.
+type ClusterResources struct {
+	CPU     string `json:"cpu,omitempty"`
+	Memory  string `json:"memory,omitempty"`
+	Pods    string `json:"pods,omitempty"`
+	Storage string `json:"storage,omitempty"`
+	GPU     string `json:"gpu,omitempty"`
+}
+
+type StorageProvisioner struct {
+	Name        string `json:"name"`
+	Provisioner string `json:"provisioner"`
+}
+
+type ClusterDnsConfig struct {
+	SearchDomains []string `json:"searchDomains"`
+	Servers       []string `json:"servers"`
+}
+
+// ClusterInfoSpec defines the desired state of ClusterInfo.
+type ClusterInfoSpec struct{}
+
 type ClusterInfoStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	ClusterID           string               `json:"clusterID,omitempty" bson:"clusterID,omitempty"`
+	KubernetesVersion   string               `json:"kubernetesVersion,omitempty" bson:"kubernetesVersion,omitempty"`
+	ClusterDnsConfig    ClusterDnsConfig     `json:"clusterDnsConfig,omitempty" bson:"clusterDnsConfig,omitempty"`
+	ClusterResources    ClusterResources     `json:"clusterResources,omitempty" bson:"clusterResources,omitempty"`
+	NodeInfo            []NodeInfo           `json:"nodeInfo,omitempty" bson:"nodeInfo,omitempty"`
+	RouterLBAddresses   []string             `json:"routerLBAddress,omitempty" bson:"routerLBAddress,omitempty"`
+	ApiServerAddresses  []string             `json:"apiServerAddresses,omitempty" bson:"apiServerAddresses,omitempty"`
+	IdentityProviders   []string             `json:"identityProviders,omitempty" bson:"identityProviders,omitempty"`
+	StorageProvisioners []StorageProvisioner `json:"storageProvisioners,omitempty" bson:"storageProvisioners,omitempty"`
+	MutatingWebhooks    []string             `json:"mutatingWebhooks,omitempty" bson:"mutatingWebhooks,omitempty"`
+	ValidatingWebhooks  []string             `json:"validatingWebhooks,omitempty" bson:"validatingWebhooks,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -61,4 +90,20 @@ type ClusterInfoList struct {
 
 func init() {
 	SchemeBuilder.Register(&ClusterInfo{}, &ClusterInfoList{})
+}
+
+func (s *ClusterInfoStatus) Normalize() {
+	sort.Strings(s.RouterLBAddresses)
+	sort.Strings(s.ApiServerAddresses)
+	sort.Strings(s.IdentityProviders)
+	sort.Strings(s.MutatingWebhooks)
+	sort.Strings(s.ValidatingWebhooks)
+
+	sort.Slice(s.NodeInfo, func(i, j int) bool {
+		return s.NodeInfo[i].Name < s.NodeInfo[j].Name
+	})
+
+	sort.Slice(s.StorageProvisioners, func(i, j int) bool {
+		return s.StorageProvisioners[i].Name < s.StorageProvisioners[j].Name
+	})
 }
