@@ -39,8 +39,8 @@ type ClusterInfoReconciler struct {
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/finalizers,verbs=update
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterversions,verbs=get;list;watch
-// +kubebuilder:rbac:groups=v1,resources=nodes,verbs=get;list;watch
-// +kubebuilder:rbac:groups=v1,resources=routes,verbs=get;list;watch
+// +kubebuilder:rbac:groups="",resources=nodes,verbs=get;list;watch
+// +kubebuilder:rbac:groups=route.openshift.io,resources=routes,verbs=get;list;watch
 // +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch
 // +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations,verbs=get;list;watch
 // +kubebuilder:rbac:groups=config.openshift.io,resources=clusterversions,verbs=get;list;watch
