@@ -39,7 +39,14 @@ type ClusterInfoReconciler struct {
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/finalizers,verbs=update
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterversions,verbs=get;list;watch
-// +kubebuilder:rbac:groups=axiom.dana.io,resources=nodes,verbs=get;list;watch
+// +kubebuilder:rbac:groups=v1,resources=nodes,verbs=get;list;watch
+// +kubebuilder:rbac:groups=v1,resources=routes,verbs=get;list;watch
+// +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch
+// +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations,verbs=get;list;watch
+// +kubebuilder:rbac:groups=config.openshift.io,resources=clusterversions,verbs=get;list;watch
+// +kubebuilder:rbac:groups=config.openshift.io,resources=oauths,verbs=get;list;watch
+// +kubebuilder:rbac:groups=nmstate.io,resources=nodenetworkconfigurationpolicies,verbs=get;list;watch
+// +kubebuilder:rbac:groups=storage.k8s.io,resources=storageclasses,verbs=get;list;watch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
