@@ -6,6 +6,14 @@ metadata:
   {{- include "axiom-operator.labels" . | nindent 4 }}
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - admissionregistration.k8s.io
   resources:
   - mutatingwebhookconfigurations
@@ -66,18 +74,17 @@ rules:
   - list
   - watch
 - apiGroups:
-  - storage.k8s.io
+  - route.openshift.io
   resources:
-  - storageclasses
+  - routes
   verbs:
   - get
   - list
   - watch
 - apiGroups:
-  - v1
+  - storage.k8s.io
   resources:
-  - nodes
-  - routes
+  - storageclasses
   verbs:
   - get
   - list
