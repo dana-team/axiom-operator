@@ -5,90 +5,100 @@ metadata:
   labels:
   {{- include "axiom-operator.labels" . | nindent 4 }}
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - admissionregistration.k8s.io
-  resources:
-  - mutatingwebhookconfigurations
-  - validatingwebhookconfigurations
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - axiom.dana.io
-  resources:
-  - clusterinfoes
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - axiom.dana.io
-  resources:
-  - clusterinfoes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - axiom.dana.io
-  resources:
-  - clusterinfoes/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - axiom.dana.io
-  resources:
-  - clusterversions
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - config.openshift.io
-  resources:
-  - clusterversions
-  - oauths
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - nmstate.io
-  resources:
-  - nodenetworkconfigurationpolicies
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - route.openshift.io
-  resources:
-  - routes
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - storage.k8s.io
-  resources:
-  - storageclasses
-  verbs:
-  - get
-  - list
-  - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - axiom.dana.io
+    resources:
+      - clusterinfoes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - axiom.dana.io
+    resources:
+      - clusterinfoes/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - axiom.dana.io
+    resources:
+      - clusterinfoes/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - axiom.dana.io
+    resources:
+      - clusterversions
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - config.openshift.io
+    resources:
+      - clusterversions
+      - oauths
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - nmstate.io
+    resources:
+      - nodenetworkconfigurationpolicies
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - route.openshift.io
+    resources:
+      - routes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - list
+      - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
