@@ -38,6 +38,9 @@ spec:
             type: object
           spec:
             description: ClusterInfoSpec defines the desired state of ClusterInfo.
+            properties:
+              hostedCluster:
+                type: boolean
             type: object
           status:
             properties:
@@ -55,9 +58,6 @@ spec:
                     items:
                       type: string
                     type: array
-                required:
-                - searchDomains
-                - servers
                 type: object
               clusterID:
                 type: string

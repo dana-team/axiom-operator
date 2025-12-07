@@ -46,12 +46,18 @@ type StorageProvisioner struct {
 }
 
 type ClusterDnsConfig struct {
-	SearchDomains []string `json:"searchDomains"`
-	Servers       []string `json:"servers"`
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Nullable
+	SearchDomains []string `json:"searchDomains,omitempty"`
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:validation:Nullable
+	Servers []string `json:"servers,omitempty"`
 }
 
 // ClusterInfoSpec defines the desired state of ClusterInfo.
-type ClusterInfoSpec struct{}
+type ClusterInfoSpec struct {
+	HostedCluster bool `json:"hostedCluster,omitempty" bson:"hostedCluster,omitempty"`
+}
 
 type ClusterInfoStatus struct {
 	ClusterID           string               `json:"clusterID,omitempty" bson:"clusterID,omitempty"`

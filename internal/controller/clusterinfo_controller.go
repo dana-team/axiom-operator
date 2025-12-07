@@ -20,9 +20,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/dana-team/axiom-operator/internal/db"
+
 	axiomv1alpha1 "github.com/dana-team/axiom-operator/api/v1alpha1"
 	"github.com/dana-team/axiom-operator/internal/controller/status"
-	"github.com/dana-team/axiom-operator/internal/db"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -40,6 +41,8 @@ type ClusterInfoReconciler struct {
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/finalizers,verbs=update
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterversions,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=nodes,verbs=get;list;watch
+// +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch;create
+// +kubebuilder:rbac:groups="",resources=pods/log,verbs=get;list;watch;create
 // +kubebuilder:rbac:groups=route.openshift.io,resources=routes,verbs=get;list;watch
 // +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations,verbs=get;list;watch
 // +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations,verbs=get;list;watch

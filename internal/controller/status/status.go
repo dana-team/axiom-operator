@@ -15,7 +15,7 @@ import (
 // the latest cluster information with the existing status. If there are differences, it updates
 // the status field of the ClusterInfo resource.
 func UpdateClusterInfoStatus(ctx context.Context, logger logr.Logger, clusterInfo v1alpha1.ClusterInfo, k8sClient client.Client) error {
-	updatedStatus, err := collectClusterInfo(ctx, logger, k8sClient)
+	updatedStatus, err := collectClusterInfo(ctx, logger, k8sClient, &clusterInfo)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func UpdateClusterInfoStatus(ctx context.Context, logger logr.Logger, clusterInf
 }
 
 // collectClusterInfo gathers various information about the cluster.
-func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient client.Client) (v1alpha1.ClusterInfoStatus, error) {
+func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient client.Client, ci *v1alpha1.ClusterInfo) (v1alpha1.ClusterInfoStatus, error) {
 	clusterInfo := v1alpha1.ClusterInfoStatus{}
 	nodes, err := resources.GetClusterNodes(ctx, logger, k8sClient)
 	if err != nil {
@@ -47,7 +47,7 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 		return clusterInfo, err
 	}
 
-	clusterDnsConfig, err := resources.GetClusterDnsConfiguration(ctx, logger, k8sClient)
+	clusterDnsConfig, err := resources.GetClusterDnsConfiguration(ctx, logger, k8sClient, ci)
 	if err != nil {
 		return clusterInfo, err
 	}
