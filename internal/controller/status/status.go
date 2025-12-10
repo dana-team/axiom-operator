@@ -62,6 +62,11 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 		return clusterInfo, err
 	}
 
+	clusterName, err := resources.GetClusterName(ctx, logger, k8sClient)
+	if err != nil {
+		return clusterInfo, err
+	}
+
 	identityProviders, err := resources.GetIdentityProviders(ctx, logger, k8sClient)
 	if err != nil {
 		return clusterInfo, err
@@ -83,6 +88,7 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 	}
 
 	clusterInfo.ClusterID = clusterID
+	clusterInfo.Name = clusterName
 	clusterInfo.KubernetesVersion = k8sVersion
 	clusterInfo.NodeInfo = nodeInfo
 	clusterInfo.ClusterDnsConfig = clusterDnsConfig
