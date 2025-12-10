@@ -36,9 +36,9 @@ type ClusterInfoReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfoes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfo,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfo/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterinfo/finalizers,verbs=update
 // +kubebuilder:rbac:groups=axiom.dana.io,resources=clusterversions,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=nodes,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch;create
