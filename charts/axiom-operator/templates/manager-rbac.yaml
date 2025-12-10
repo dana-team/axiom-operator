@@ -35,7 +35,7 @@ rules:
   - apiGroups:
       - axiom.dana.io
     resources:
-      - clusterinfoes
+      - clusterinfo
     verbs:
       - create
       - delete
@@ -47,13 +47,13 @@ rules:
   - apiGroups:
       - axiom.dana.io
     resources:
-      - clusterinfoes/finalizers
+      - clusterinfo/finalizers
     verbs:
       - update
   - apiGroups:
       - axiom.dana.io
     resources:
-      - clusterinfoes/status
+      - clusterinfo/status
     verbs:
       - get
       - patch

@@ -8,12 +8,12 @@ rules:
 - apiGroups:
   - axiom.dana.io
   resources:
-  - clusterinfoes
+  - clusterinfo
   verbs:
   - '*'
 - apiGroups:
   - axiom.dana.io
   resources:
-  - clusterinfoes/status
+  - clusterinfo/status
   verbs:
   - get
