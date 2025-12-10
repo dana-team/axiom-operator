@@ -60,6 +60,7 @@ type ClusterInfoSpec struct {
 }
 
 type ClusterInfoStatus struct {
+	Name                string               `json:"name,omitempty" bson:"name,omitempty"`
 	ClusterID           string               `json:"clusterID,omitempty" bson:"clusterID,omitempty"`
 	KubernetesVersion   string               `json:"kubernetesVersion,omitempty" bson:"kubernetesVersion,omitempty"`
 	ClusterDnsConfig    ClusterDnsConfig     `json:"clusterDnsConfig,omitempty" bson:"clusterDnsConfig,omitempty"`
@@ -75,6 +76,7 @@ type ClusterInfoStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:resource:path=clusterinfo,singular=clusterinfo,scope=Cluster,shortName=ci
 
 // ClusterInfo is the Schema for the clusterinfoes API.
 type ClusterInfo struct {

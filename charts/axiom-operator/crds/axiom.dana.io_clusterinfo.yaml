@@ -4,15 +4,17 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.2
-  name: clusterinfoes.axiom.dana.io
+  name: clusterinfo.axiom.dana.io
 spec:
   group: axiom.dana.io
   names:
     kind: ClusterInfo
     listKind: ClusterInfoList
-    plural: clusterinfoes
+    plural: clusterinfo
+    shortNames:
+    - ci
     singular: clusterinfo
-  scope: Namespaced
+  scope: Cluster
   versions:
   - name: v1alpha1
     schema:
@@ -85,6 +87,8 @@ spec:
                 items:
                   type: string
                 type: array
+              name:
+                type: string
               nodeInfo:
                 items:
                   description: NodeInfo holds information about a node

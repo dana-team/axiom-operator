@@ -44,3 +44,13 @@ func GetApiServerAddress(ctx context.Context, logger logr.Logger, k8sClient clie
 	}
 	return ips, nil
 }
+
+func GetClusterName(ctx context.Context, logger logr.Logger, k8sClient client.Client) (string, error) {
+	route := &v1.Route{}
+	if err := k8sClient.Get(ctx, client.ObjectKey{Name: common.ConsoleName, Namespace: common.ConsoleNamespace}, route); err != nil {
+		logger.Error(err, "Failed to get console route")
+		return "", err
+	}
+	clusterName := strings.Replace(route.Spec.Host, common.IngressPrefix, "", 1)
+	return clusterName, nil
+}
