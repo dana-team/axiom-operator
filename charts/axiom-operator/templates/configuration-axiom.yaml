@@ -7,5 +7,5 @@ metadata:
 data:
   MONGO_URI: {{ .Values.config.mongoUrl | quote }}
   DNS_READER_IMAGE: {{ .Values.config.dnsReaderImage | quote }}
-  DNS_READER_NAMESPACE: {{ .Values.config.dnsReaderNamespace | quote }}
+  POD_NAMESPACE: {{ .Values.config.dnsReaderNamespace | quote }}
 
