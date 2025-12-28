@@ -25,8 +25,9 @@ import (
 )
 
 const (
-	ReslovConfDir = "/etc/resolv.conf"
-	HostMountPath = "/host/resolv.conf"
+	ReslovConfDir      = "/etc/resolv.conf"
+	HostMountPath      = "/host/resolv.conf"
+	ServiceAccountName = "axiom-operator-controller-manager"
 )
 
 // DnsResolverConfig represents the DNS resolver configuration structure
@@ -146,7 +147,7 @@ func getDNSFromResolveConf(ctx context.Context, k8sClient client.Client, logger 
 }
 
 func newDNSReaderPod() *corev1.Pod {
-	privileged := true
+	runAsUser := int64(0)
 	hostPathType := corev1.HostPathFile
 
 	return &corev1.Pod{
@@ -155,8 +156,9 @@ func newDNSReaderPod() *corev1.Pod {
 			Namespace: os.Getenv("POD_NAMESPACE"),
 		},
 		Spec: corev1.PodSpec{
-			RestartPolicy: corev1.RestartPolicyNever,
-			HostNetwork:   true,
+			ServiceAccountName: ServiceAccountName,
+			RestartPolicy:      corev1.RestartPolicyNever,
+			HostNetwork:        true,
 			Containers: []corev1.Container{
 				{
 					Name:  "reader",
@@ -170,7 +172,7 @@ func newDNSReaderPod() *corev1.Pod {
 					},
 					Command: []string{"cat", HostMountPath},
 					SecurityContext: &corev1.SecurityContext{
-						Privileged: &privileged,
+						RunAsUser: &runAsUser,
 					},
 				},
 			},
