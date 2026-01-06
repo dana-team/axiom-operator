@@ -3,6 +3,7 @@ package common
 import (
 	"context"
 	"fmt"
+	"net"
 
 	"k8s.io/apimachinery/pkg/api/resource"
 
@@ -26,4 +27,36 @@ func FormatMiB(q *resource.Quantity) string {
 	bytes := q.Value()
 	mib := float64(bytes) / (1024 * 1024)
 	return fmt.Sprintf("%.0fMi", mib)
+}
+
+func CreateSegmentFromIPAndPrefix(ip string, prefix int) (string, error) {
+	parsedIp := net.ParseIP(ip)
+	if parsedIp == nil {
+		return "", fmt.Errorf("failed to parse IP address %s", ip)
+	}
+
+	parsedIp = parsedIp.To4()
+	if parsedIp == nil {
+		return "", fmt.Errorf("failed to convert IP address %s to IPv4", ip)
+	}
+
+	mask := net.CIDRMask(prefix, 32)
+	network := parsedIp.Mask(mask)
+	ipNet := net.IPNet{IP: network, Mask: mask}
+
+	return ipNet.String(), nil
+}
+
+func FilterUniqueStrings(slice []string) []string {
+	seen := make(map[string]struct{}, len(slice))
+	out := make([]string, 0, len(slice))
+	for _, s := range slice {
+		if _, ok := seen[s]; !ok {
+			continue
+		}
+		seen[s] = struct{}{}
+		out = append(out, s)
+	}
+
+	return out
 }

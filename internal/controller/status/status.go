@@ -67,7 +67,7 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 		return clusterInfo, err
 	}
 
-	identityProviders, err := resources.GetIdentityProviders(ctx, logger, k8sClient)
+	identityProviders, err := resources.GetIdentityProviders(ctx, logger, k8sClient, ci)
 	if err != nil {
 		return clusterInfo, err
 	}
@@ -87,6 +87,11 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 		return clusterInfo, err
 	}
 
+	segments, err := resources.GetClusterSegments(ctx, logger, k8sClient, ci, nodes, clusterName)
+	if err != nil {
+		return clusterInfo, err
+	}
+
 	clusterInfo.ClusterID = clusterID
 	clusterInfo.Name = clusterName
 	clusterInfo.KubernetesVersion = k8sVersion
@@ -99,5 +104,6 @@ func collectClusterInfo(ctx context.Context, logger logr.Logger, k8sClient clien
 	clusterInfo.StorageProvisioners = storageProvisioners
 	clusterInfo.MutatingWebhooks = mutatingWebhooks
 	clusterInfo.ValidatingWebhooks = validatingWebhooks
+	clusterInfo.Segments = segments
 	return clusterInfo, nil
 }
