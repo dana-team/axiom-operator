@@ -78,6 +78,7 @@ rules:
   - nmstate.io
   resources:
   - nodenetworkconfigurationpolicies
+  - nodenetworkstates
   verbs:
   - get
   - list

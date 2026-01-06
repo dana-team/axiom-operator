@@ -15,7 +15,6 @@ linters:
     - lll
     - misspell
     - nakedret
-    - prealloc
     - revive
     - unconvert
     - unparam

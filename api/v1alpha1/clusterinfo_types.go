@@ -72,6 +72,7 @@ type ClusterInfoStatus struct {
 	StorageProvisioners []StorageProvisioner `json:"storageProvisioners,omitempty" bson:"storageProvisioners,omitempty"`
 	MutatingWebhooks    []string             `json:"mutatingWebhooks,omitempty" bson:"mutatingWebhooks,omitempty"`
 	ValidatingWebhooks  []string             `json:"validatingWebhooks,omitempty" bson:"validatingWebhooks,omitempty"`
+	Segments            []string             `json:"segments,omitempty" bson:"segments,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -109,6 +109,10 @@ spec:
                 items:
                   type: string
                 type: array
+              segments:
+                items:
+                  type: string
+                type: array
               storageProvisioners:
                 items:
                   properties:

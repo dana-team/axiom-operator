@@ -27,14 +27,14 @@ import (
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
-	_ "k8s.io/client-go/plugin/pkg/client/auth"
-
 	nmstatev1 "github.com/dana-team/axiom-operator/api/nmstate/v1"
 	axiomv1alpha1 "github.com/dana-team/axiom-operator/api/v1alpha1"
 	"github.com/dana-team/axiom-operator/internal/controller"
+	nmstatev1alpha1 "github.com/nmstate/kubernetes-nmstate/api/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/certwatcher"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
@@ -51,6 +51,7 @@ var (
 )
 
 func init() {
+	utilruntime.Must(nmstatev1alpha1.AddToScheme(scheme))
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(nmstatev1.AddToScheme(scheme))
 	utilruntime.Must(axiomv1alpha1.AddToScheme(scheme))

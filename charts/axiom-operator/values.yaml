@@ -40,3 +40,5 @@ config:
   mongoUrl: ""
   dnsReaderImage: "busybox:latest"
   dnsReaderNamespace: "axiom-system"
+  netboxURL: "netbox.com"
+  netboxToken: "token"
