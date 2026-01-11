@@ -107,6 +107,7 @@ func (s *ClusterInfoStatus) Normalize() {
 	sort.Strings(s.IdentityProviders)
 	sort.Strings(s.MutatingWebhooks)
 	sort.Strings(s.ValidatingWebhooks)
+	sort.Strings(s.Segments)
 
 	sort.Slice(s.NodeInfo, func(i, j int) bool {
 		return s.NodeInfo[i].Name < s.NodeInfo[j].Name
