@@ -19,16 +19,20 @@ func UpdateClusterInfoStatus(ctx context.Context, logger logr.Logger, clusterInf
 	if err != nil {
 		return err
 	}
-	return common.RetryOnConflictUpdate(ctx, &clusterInfo, k8sClient, clusterInfo.Name, clusterInfo.Namespace, func(obj *v1alpha1.ClusterInfo) error {
-		desiredCopy := updatedStatus.DeepCopy()
-		existingCopy := obj.DeepCopy()
-		desiredCopy.Normalize()
-		existingCopy.Status.Normalize()
 
-		if !reflect.DeepEqual(*desiredCopy, existingCopy.Status) {
+	return common.RetryOnConflictUpdate(ctx, &clusterInfo, k8sClient, clusterInfo.Name, clusterInfo.Namespace, func(obj *v1alpha1.ClusterInfo) error {
+		updatedStatus.Normalize()
+		obj.Status.Normalize()
+
+		if !reflect.DeepEqual(updatedStatus, obj.Status) {
+			logger.Info("Status changed, updating",
+				"segments", len(updatedStatus.Segments),
+				"nodes", len(updatedStatus.NodeInfo))
 			obj.Status = updatedStatus
 			return k8sClient.Status().Update(ctx, obj)
 		}
+
+		logger.V(1).Info("Status unchanged, skipping update")
 		return nil
 	})
 }
