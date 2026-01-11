@@ -51,9 +51,9 @@ func CalculateClusterCompute(nodes []corev1.Node) v1alpha1.ClusterResources {
 
 	return v1alpha1.ClusterResources{
 		CPU:     totalCPU.String(),
-		Memory:  common.FormatMiB(totalMemory),
+		Memory:  common.FormatGiB(totalMemory),
 		Pods:    totalPods.String(),
-		Storage: common.FormatMiB(totalStorage),
+		Storage: common.FormatGiB(totalStorage),
 		GPU:     fmt.Sprintf("%d", totalGPU),
 	}
 }

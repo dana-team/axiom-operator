@@ -48,8 +48,10 @@ func getSegmentsFromNetBox(ctx context.Context, logger logr.Logger, clusterName 
 		return nil, err
 	}
 
+	cluster := common.StripDomain(clusterName)
+
 	params := url.Values{}
-	params.Add("cf_Cluster", clusterName)
+	params.Add("cf_Cluster", cluster)
 	params.Add("limit", "0")
 	baseURL.RawQuery = params.Encode()
 
@@ -90,7 +92,7 @@ func getSegmentsFromNetBox(ctx context.Context, logger logr.Logger, clusterName 
 		return nil, fmt.Errorf("failed to parse NetBox response: %w", err)
 	}
 
-	logger.Info(fmt.Sprintf("Found %d prefixes for cluster %s", results.Count, clusterName))
+	logger.Info(fmt.Sprintf("Found %d prefixes for cluster %s", results.Count, cluster))
 
 	var segments []string
 	for _, prefix := range results.Results {
@@ -109,25 +111,32 @@ func getSegmentsFromNodeNetworkState(ctx context.Context, logger logr.Logger, k8
 		nns := &nmstatev1.NodeNetworkState{}
 		if err := k8sClient.Get(ctx, client.ObjectKey{Name: node.Name}, nns); err != nil {
 			if errors.IsNotFound(err) {
-				logger.Info(fmt.Sprintf("Node %s has no NodeNetworkState", node.Name))
+				logger.Info("Node has no NodeNetworkState", "node", node.Name)
 				continue
 			}
-			logger.Error(err, fmt.Sprintf("Failed to get NodeNetworkState for node %s", node.Name))
+			logger.Error(err, "Failed to get NodeNetworkState", "node", node.Name)
 			return nil, err
+		}
+
+		if len(nns.Status.CurrentState.Raw) == 0 {
+			logger.V(1).Info("Empty CurrentState", "node", node.Name)
+			continue
 		}
 
 		var state NodeNetworkStateCurrentState
 		if err := yaml.Unmarshal(nns.Status.CurrentState.Raw, &state); err != nil {
-			logger.Error(err, fmt.Sprintf("Failed to unmarshal NodeNetworkState for node %s", node.Name))
+			logger.Error(err, "Failed to unmarshal NodeNetworkState", "node", node.Name)
 			return nil, err
 		}
 
+		logger.V(1).Info("NNS parsed", "node", node.Name, "interfaces", len(state.Interfaces))
+
 		for _, iface := range state.Interfaces {
-			for _, segment := range iface.Ipv4.Address {
-				if segment.IP != "" {
-					s, err := common.CreateSegmentFromIPAndPrefix(segment.IP, segment.PrefixLength)
+			for _, addr := range iface.Ipv4.Address {
+				if addr.IP != "" && addr.PrefixLength > 0 {
+					s, err := common.CreateSegmentFromIPAndPrefix(addr.IP, addr.PrefixLength)
 					if err != nil {
-						logger.Error(err, fmt.Sprintf("Failed to create segment from IP %s and prefix %d", segment.IP, segment.PrefixLength))
+						logger.Error(err, "Failed to create segment", "ip", addr.IP, "prefix", addr.PrefixLength)
 						return nil, err
 					}
 					segments = append(segments, s)
@@ -136,5 +145,7 @@ func getSegmentsFromNodeNetworkState(ctx context.Context, logger logr.Logger, k8
 		}
 	}
 
-	return common.FilterUniqueStrings(segments), nil
+	unique := common.FilterUniqueStrings(segments)
+	logger.Info("Segments collected", "count", len(unique), "nodes", len(nodes))
+	return unique, nil
 }
