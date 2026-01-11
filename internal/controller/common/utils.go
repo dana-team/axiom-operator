@@ -60,6 +60,11 @@ func FilterUniqueStrings(slice []string) []string {
 	seen := make(map[string]struct{}, len(slice))
 	out := make([]string, 0, len(slice))
 	for _, s := range slice {
+		// Skip internal/loopback ranges
+		if strings.HasPrefix(s, "10.") || strings.HasPrefix(s, "127.") {
+			continue
+		}
+
 		if _, ok := seen[s]; !ok {
 			seen[s] = struct{}{}
 			out = append(out, s)
