@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -62,7 +63,12 @@ func getSegmentsFromNetBox(ctx context.Context, logger logr.Logger, clusterName 
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	c := &http.Client{Transport: tr}
+
+	resp, err := c.Do(req)
 	if err != nil {
 		logger.Error(err, "Failed to send NetBox request")
 		return nil, err
