@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"strings"
 
 	"k8s.io/apimachinery/pkg/api/resource"
 
@@ -27,6 +28,14 @@ func FormatMiB(q *resource.Quantity) string {
 	bytes := q.Value()
 	mib := float64(bytes) / (1024 * 1024)
 	return fmt.Sprintf("%.0fMi", mib)
+}
+
+func StripDomain(host string) string {
+	parts := strings.Split(host, ".")
+	if len(parts) > 2 {
+		return strings.Join(parts[:len(parts)-2], ".")
+	}
+	return parts[0]
 }
 
 func CreateSegmentFromIPAndPrefix(ip string, prefix int) (string, error) {
