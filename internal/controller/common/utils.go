@@ -30,6 +30,13 @@ func FormatMiB(q *resource.Quantity) string {
 	return fmt.Sprintf("%.0fMi", mib)
 }
 
+// FormatGiB converts a Kubernetes resource.Quantity value to a human-readable string in GiB units
+func FormatGiB(q *resource.Quantity) string {
+	bytes := q.Value()
+	gib := float64(bytes) / (1024 * 1024 * 1024)
+	return fmt.Sprintf("%.1fGi", gib)
+}
+
 func StripDomain(host string) string {
 	parts := strings.Split(host, ".")
 	if len(parts) > 2 {
